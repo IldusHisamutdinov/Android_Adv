@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Menu Navigation Activity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Weather</string>
+    <string name="nav_header_subtitle">aelov62@gmail.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">сайт</string>
+    <string name="action_favorite">добавленные</string>
+    <string name="menu_send">Отправить</string>
+    <string name="menu_home">Главная</string>
+    <string name="menu_location">Местоположение</string>
+    <string name="menu_geolocation">Геолокация</string>
+    <string name="menu_history">История</string>
+    <string name="menu_setting">Настройки</string>
+    <string name="menu_developer">About the developer</string>
+
+
+</resources>
+
+
