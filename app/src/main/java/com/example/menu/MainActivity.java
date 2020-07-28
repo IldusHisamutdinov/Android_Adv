@@ -1,19 +1,24 @@
 package com.example.menu;
 
 import android.os.Bundle;
+
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+
 import android.view.MenuItem;
+
 import com.google.android.material.navigation.NavigationView;
+
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +35,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initDrawer(Toolbar toolbar) {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
 //     final androidx.constraintlayout.widget.ConstraintLayout mainContent = findViewById(R.id.mainContent);
@@ -55,7 +59,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -104,11 +107,10 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "Setting", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_send) {
             Toast.makeText(getApplicationContext(), "Write to developer", Toast.LENGTH_SHORT).show();
-        }else if (id == R.id.nav_developer) {
+        } else if (id == R.id.nav_developer) {
             Toast.makeText(getApplicationContext(), "About the developer", Toast.LENGTH_SHORT).show();
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
