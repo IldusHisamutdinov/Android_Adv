@@ -1,32 +1,47 @@
 package com.example.menu;
 
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
-
-import androidx.core.view.GravityCompat;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.view.Menu;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    DrawerLayout drawer = findViewById(R.id.drawer_layout);
+    private DrawerLayout drawer;
+
+    private SensorManager sensorManager;
+    private Sensor sensorTemp;
+    private Sensor sensorHumidity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        drawer = findViewById(R.id.drawer_layout);
         Toolbar toolbar = initToolbar();
         initDrawer(toolbar);
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensorTemp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+        sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
+
     }
+
 
     private Toolbar initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -114,4 +129,56 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    public void onClickSensTemp(View v) {
+        sensorManager.registerListener(listenerSensor, sensorTemp,
+                SensorManager.SENSOR_DELAY_NORMAL);
+
+    }
+
+    public void onClickSensHumidity(View v) {
+        sensorManager.registerListener(listenerSensorHum, sensorHumidity,
+                SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+
+    SensorEventListener listenerSensor = new SensorEventListener() {
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            TextView temp = findViewById(R.id.temp);
+            temp.setText(String.valueOf(event.values[0]));
+
+        }
+
+    };
+
+    SensorEventListener listenerSensorHum = new SensorEventListener() {
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            TextView hum = findViewById(R.id.h);
+            hum.setText(String.valueOf(event.values[0]));
+
+        }
+
+    };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(listenerSensor);
+        sensorManager.unregisterListener(listenerSensorHum);
+    }
+
+
 }
