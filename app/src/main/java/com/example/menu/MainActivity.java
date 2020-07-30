@@ -1,5 +1,6 @@
 package com.example.menu;
 
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity
     private SensorManager sensorManager;
     private Sensor sensorTemp;
     private Sensor sensorHumidity;
+    private TextView temp;
+    private TextView hum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +39,11 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = initToolbar();
         initDrawer(toolbar);
 
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorTemp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
-
+        temp = findViewById(R.id.temp);
+        hum = findViewById(R.id.h);
     }
 
 
@@ -130,13 +134,13 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-
+    // Button onClick показание температуры
     public void onClickSensTemp(View v) {
         sensorManager.registerListener(listenerSensor, sensorTemp,
                 SensorManager.SENSOR_DELAY_NORMAL);
-
     }
 
+    // Button onClick показание влажности
     public void onClickSensHumidity(View v) {
         sensorManager.registerListener(listenerSensorHum, sensorHumidity,
                 SensorManager.SENSOR_DELAY_NORMAL);
@@ -151,9 +155,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onSensorChanged(SensorEvent event) {
-            TextView temp = findViewById(R.id.temp);
             temp.setText(String.valueOf(event.values[0]));
-
         }
 
     };
@@ -166,9 +168,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onSensorChanged(SensorEvent event) {
-            TextView hum = findViewById(R.id.h);
             hum.setText(String.valueOf(event.values[0]));
-
         }
 
     };
