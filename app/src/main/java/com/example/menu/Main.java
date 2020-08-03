@@ -9,10 +9,6 @@ public class Main {
     @Expose
     public Double temp;
 
- //   public Double getTemp() {
-//        return temp;
- //   }
-
     public long getTemp() {
         double doubleValue = temp;
         long temp1 = (long) doubleValue;

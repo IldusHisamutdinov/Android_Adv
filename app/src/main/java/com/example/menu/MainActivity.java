@@ -37,8 +37,6 @@ public class MainActivity extends AppCompatActivity
     private TextView temp;
     private TextView hum;
     private TextView tempservice;
- //   private TextView tempservice2;
-
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -49,17 +47,11 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = initToolbar();
         initDrawer(toolbar);
 
-
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorTemp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
         temp = findViewById(R.id.temp);
         hum = findViewById(R.id.h);
-
-
-//        new Thread(() -> {
-//            initHttp();
-//        }).start();
 
     }
 
@@ -169,13 +161,13 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    // Button onClick показание температуры
+    // Button onClick показание датчика температуры
     public void onClickSensTemp(View v) {
         sensorManager.registerListener(listenerSensor, sensorTemp,
                 SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    // Button onClick показание влажности
+    // Button onClick показание датчика влажности
     public void onClickSensHumidity(View v) {
         sensorManager.registerListener(listenerSensorHum, sensorHumidity,
                 SensorManager.SENSOR_DELAY_NORMAL);
@@ -214,18 +206,6 @@ public class MainActivity extends AppCompatActivity
         sensorManager.unregisterListener(listenerSensor);
         sensorManager.unregisterListener(listenerSensorHum);
     }
-
-//    // Получатель широковещательного сообщения
-//    private BroadcastReceiver weatherFinishedReceiver = (context, intent) -> {
-//
-//        final long result = intent.getLongExtra(WeatherService.EXTRA_RESULT, 0);
-//
-//        tempservice.post(() -> {
-//
-//            tempservice.setText(Long.toString(result));
-//
-//        });
-//    };
 
     // Получатель широковещательного сообщения
     private BroadcastReceiver weatherFinishedReceiver = new BroadcastReceiver() {

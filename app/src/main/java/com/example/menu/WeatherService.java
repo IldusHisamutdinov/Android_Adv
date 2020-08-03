@@ -25,13 +25,9 @@ public class WeatherService extends IntentService {
 //    private TextView tempservice;
     private TextView tempservice2;
     private Handler handler = new Handler();
-    Long r;
+    Long temp; // температура
 
-    //    private TextView tempservice;
-//    tempservice = findViewById(R.id.tempService);
-//    tempservice2 = findViewById(R.id.t);
     public WeatherService() {
-
         super("TempWeather");
     }
 
@@ -61,38 +57,18 @@ public class WeatherService extends IntentService {
         HttpsURLConnection urlConnection = null;
 
         try {
-            //          getHttpsData.getHttpsData(url);
-//            String KEY = "0ecf8658c4caf135dd4f087798c91ffb";
             URL url = new URL("https://api.openweathermap.org/data/2.5/weather?id=479561&units=metric&appid=0ecf8658c4caf135dd4f087798c91ffb");
-//            URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=Abdulino&units=metric&appid=0ecf8658c4caf135dd4f087798c91ffb");
-//            URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=Canberrfa&units=metric&appid=0ecf8658c4caf135dd4f087798c91ffb");
             urlConnection = (HttpsURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.setReadTimeout(10000);
-
-//
-//            if (urlConnection.getResponseCode() == 200) {
-//                handler.post(() -> {
-//
-//                    tempservice2.setText("Н/А");
-//
-//                });
-//            }
-
 
             BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             String result = in.lines().collect(Collectors.joining());
             Gson gson = new Gson();
             ResponseWeather resultWeather = gson.fromJson(result, ResponseWeather.class);
-            r = resultWeather.getMain().getTemp();
-//            handler.post(() -> {
-//
-//
-//                tempservice2.setText("" + resultWeather.getMain().getTemp());
-//
-//
-//            });
-            return r;
+            temp = resultWeather.getMain().getTemp();
+
+            return temp;
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
