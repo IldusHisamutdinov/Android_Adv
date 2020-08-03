@@ -9,6 +9,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -35,7 +37,10 @@ public class MainActivity extends AppCompatActivity
     private TextView temp;
     private TextView hum;
     private TextView tempservice;
+ //   private TextView tempservice2;
 
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,12 +49,18 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = initToolbar();
         initDrawer(toolbar);
 
+
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorTemp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
         temp = findViewById(R.id.temp);
         hum = findViewById(R.id.h);
-        tempservice = findViewById(R.id.tempService);
+
+
+//        new Thread(() -> {
+//            initHttp();
+//        }).start();
+
     }
 
     // Для регистрации Broadcast Receiver
@@ -66,6 +77,7 @@ public class MainActivity extends AppCompatActivity
 
     // Button onClick показание WeatherService
     public void onClickWeatherService(View v) {
+        tempservice = findViewById(R.id.tempService);
         WeatherService.startWeatherService(MainActivity.this);
     }
 
@@ -203,11 +215,24 @@ public class MainActivity extends AppCompatActivity
         sensorManager.unregisterListener(listenerSensorHum);
     }
 
+//    // Получатель широковещательного сообщения
+//    private BroadcastReceiver weatherFinishedReceiver = (context, intent) -> {
+//
+//        final long result = intent.getLongExtra(WeatherService.EXTRA_RESULT, 0);
+//
+//        tempservice.post(() -> {
+//
+//            tempservice.setText(Long.toString(result));
+//
+//        });
+//    };
+
     // Получатель широковещательного сообщения
     private BroadcastReceiver weatherFinishedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             final long result = intent.getLongExtra(WeatherService.EXTRA_RESULT, 0);
+            // Потокобезопасный вывод данных
             tempservice.post(new Runnable() {
                 @SuppressLint("SetTextI18n")
                 @Override
@@ -217,5 +242,6 @@ public class MainActivity extends AppCompatActivity
             });
         }
     };
+
 
 }

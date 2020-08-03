@@ -1,13 +1,37 @@
 package com.example.menu;
 
+import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.os.Handler;
+import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
+
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.stream.Collectors;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class WeatherService extends IntentService {
     static final String EXTRA_RESULT = "com.example.menu.temp.RESULT";
+//    private TextView tempservice;
+    private TextView tempservice2;
+    private Handler handler = new Handler();
+    Long r;
 
+    //    private TextView tempservice;
+//    tempservice = findViewById(R.id.tempService);
+//    tempservice2 = findViewById(R.id.t);
     public WeatherService() {
+
         super("TempWeather");
     }
 
@@ -15,9 +39,12 @@ public class WeatherService extends IntentService {
         Intent intent = new Intent(context, WeatherService.class);
         context.startService(intent);
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onHandleIntent(Intent intent) {
-        long result = 2;
+       long result = initHttp();
+
         sendBrodcast(result);
     }
 
@@ -27,4 +54,54 @@ public class WeatherService extends IntentService {
         broadcastIntent.putExtra(EXTRA_RESULT, result);
         sendBroadcast(broadcastIntent);
     }
+
+    @SuppressLint("SetTextI18n")
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private Long initHttp() {
+        HttpsURLConnection urlConnection = null;
+
+        try {
+            //          getHttpsData.getHttpsData(url);
+//            String KEY = "0ecf8658c4caf135dd4f087798c91ffb";
+            URL url = new URL("https://api.openweathermap.org/data/2.5/weather?id=479561&units=metric&appid=0ecf8658c4caf135dd4f087798c91ffb");
+//            URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=Abdulino&units=metric&appid=0ecf8658c4caf135dd4f087798c91ffb");
+//            URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=Canberrfa&units=metric&appid=0ecf8658c4caf135dd4f087798c91ffb");
+            urlConnection = (HttpsURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setReadTimeout(10000);
+
+//
+//            if (urlConnection.getResponseCode() == 200) {
+//                handler.post(() -> {
+//
+//                    tempservice2.setText("Н/А");
+//
+//                });
+//            }
+
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            String result = in.lines().collect(Collectors.joining());
+            Gson gson = new Gson();
+            ResponseWeather resultWeather = gson.fromJson(result, ResponseWeather.class);
+            r = resultWeather.getMain().getTemp();
+//            handler.post(() -> {
+//
+//
+//                tempservice2.setText("" + resultWeather.getMain().getTemp());
+//
+//
+//            });
+            return r;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+        return null;
+    }
+
+
 }
