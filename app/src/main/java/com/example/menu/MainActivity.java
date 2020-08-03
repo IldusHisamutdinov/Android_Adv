@@ -1,6 +1,10 @@
 package com.example.menu;
 
+import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -24,12 +28,13 @@ import com.google.android.material.navigation.NavigationView;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
-
+    static final String BROADCAST_ACTION_WEATHERFINISHED = "com.example.menu.weatherfinished";
     private SensorManager sensorManager;
     private Sensor sensorTemp;
     private Sensor sensorHumidity;
     private TextView temp;
     private TextView hum;
+    private TextView tempservice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +49,24 @@ public class MainActivity extends AppCompatActivity
         sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
         temp = findViewById(R.id.temp);
         hum = findViewById(R.id.h);
+        tempservice = findViewById(R.id.tempService);
+    }
+
+    // Для регистрации Broadcast Receiver
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(weatherFinishedReceiver, new IntentFilter(BROADCAST_ACTION_WEATHERFINISHED));
+    }
+
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(weatherFinishedReceiver);
+    }
+
+    // Button onClick показание WeatherService
+    public void onClickWeatherService(View v) {
+        WeatherService.startWeatherService(MainActivity.this);
     }
 
 
@@ -180,5 +203,19 @@ public class MainActivity extends AppCompatActivity
         sensorManager.unregisterListener(listenerSensorHum);
     }
 
+    // Получатель широковещательного сообщения
+    private BroadcastReceiver weatherFinishedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final long result = intent.getLongExtra(WeatherService.EXTRA_RESULT, 0);
+            tempservice.post(new Runnable() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void run() {
+                    tempservice.setText(Long.toString(result));
+                }
+            });
+        }
+    };
 
 }
