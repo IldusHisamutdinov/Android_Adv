@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
-import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
@@ -22,8 +21,6 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class WeatherService extends IntentService {
     static final String EXTRA_RESULT = "com.example.menu.temp.RESULT";
-//    private TextView tempservice;
-    private TextView tempservice2;
     private Handler handler = new Handler();
     Long temp; // температура
 
@@ -67,8 +64,8 @@ public class WeatherService extends IntentService {
             Gson gson = new Gson();
             ResponseWeather resultWeather = gson.fromJson(result, ResponseWeather.class);
             temp = resultWeather.getMain().getTemp();
-
             return temp;
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
