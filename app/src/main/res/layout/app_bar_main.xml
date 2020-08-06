@@ -110,5 +110,13 @@
         android:onClick="onClickWeatherService"
         android:text="TempService" />
 
+    <ImageView
+        android:id="@+id/coord"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="200dp"
+        android:layout_marginTop="300dp"
+        app:srcCompat="@mipmap/ic_1_6" />
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.squareup.picasso.Picasso;
 
 
 public class MainActivity extends AppCompatActivity
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity
     private TextView temp;
     private TextView hum;
     private TextView tempservice;
+
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -52,6 +55,14 @@ public class MainActivity extends AppCompatActivity
         sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
         temp = findViewById(R.id.temp);
         hum = findViewById(R.id.h);
+
+        ImageView imageView = findViewById(R.id.coord);
+        Picasso.get()
+                .load("http://openweathermap.org/img/wn/01d.png")
+    //            .transform(new CircleTransformation())
+                .rotate(1)
+                .placeholder(R.mipmap.ic_1_6)
+                .into(imageView);
 
     }
 
