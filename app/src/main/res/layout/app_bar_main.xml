@@ -134,8 +134,7 @@
             android:id="@+id/editCity"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:hint="Город,страна"
-            android:text="Ufa,ru" />
+            android:hint="Город,страна" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
@@ -148,11 +147,11 @@
 
     <TextView
         android:id="@+id/tempretrofit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="120dp"
+        android:layout_width="110dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="80dp"
         android:layout_marginTop="450dp"
-        android:text="25"
+        android:text=" "
         android:textSize="30sp" />
 
     <TextView
