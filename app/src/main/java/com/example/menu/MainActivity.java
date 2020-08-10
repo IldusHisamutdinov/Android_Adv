@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -14,6 +15,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +28,13 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.squareup.picasso.Picasso;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends AppCompatActivity
@@ -37,7 +47,15 @@ public class MainActivity extends AppCompatActivity
     private TextView temp;
     private TextView hum;
     private TextView tempservice;
-
+    private OpenWeather openWeather;
+    private TextView textTemp; // Температура (в градусах)
+    private TextView description;
+    private TextView editCity;
+    private String pngUrl;
+    private String NAME_CITY = "nameCity"; // для SharedPreferences
+    private String TEMP_T ="temp"; // для SharedPreferences
+    private ImageView imageView;
+    
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +68,140 @@ public class MainActivity extends AppCompatActivity
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorTemp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
+
+
+        initRetorfit();
+        initGui();
+        initEvents();
+        textTown();
+    }
+
+    private void initGui() {
         temp = findViewById(R.id.temp);
         hum = findViewById(R.id.h);
+        textTemp = findViewById(R.id.tempretrofit);
+        editCity = findViewById(R.id.editCity);
+        description = findViewById(R.id.description);
+        imageView = findViewById(R.id.coord);
+    }
 
+    public void saveSharedPrefs() {
+        String preferenceFileName = "name";
+        SharedPreferences sharedPref = getSharedPreferences(preferenceFileName, MODE_PRIVATE);
+        savePreferences(sharedPref);    // сохранить настройки
+    }
+
+    public void loadSharedPrefs() {
+        String preferenceFileName = "name";
+        SharedPreferences sharedPref = getSharedPreferences(preferenceFileName, MODE_PRIVATE);
+        loadPreferences(sharedPref);
+    }
+
+    private void savePreferences(SharedPreferences sharedPref) {
+        String keys = editCity.getText().toString();
+        String values = textTemp.getText().toString();
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(NAME_CITY, keys);
+        editor.putString(TEMP_T, values);
+        editor.apply();//сохраняет в backgraund потоке
+    }
+
+    private void loadPreferences(SharedPreferences sharedPref) {
+        String keys = editCity.getText().toString();
+        String value = textTemp.getText().toString();
+        String valueFirst = sharedPref.getString(NAME_CITY, keys );
+        String valueSecond = sharedPref.getString(TEMP_T, value );
+        editCity.setText(valueFirst);
+        textTemp.setText(valueSecond);
+    }
+
+    public void textTown() {
+        String town = editCity.getText().toString();
+
+        if (town != null) {
+            loadSharedPrefs();
+            picasso();
+        }
+
+    }
+
+    private void picasso() { //при первой загрузки активити
+        ImageView imageView = findViewById(R.id.coord);
+        Picasso.get()
+                .load(R.mipmap.ic_1_6)
+                .transform(new IconTransformation())
+                .into(imageView);
+    }
+
+    private void picasso(String icon) {
+        icon = pngUrl;
+        String url;
+        url = "https://openweathermap.org/img/wn/";
+ //       ImageView imageView = findViewById(R.id.coord);
+        Picasso.get()
+                .load(url + pngUrl + ".png")
+                .transform(new IconTransformation())
+                .placeholder(R.mipmap.ic_1_6)
+                .into(imageView);
+    }
+
+    private void initRetorfit() {
+        Retrofit retrofit;
+        retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.openweathermap.org/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        openWeather = retrofit.create(OpenWeather.class);
+    }
+
+    private void requestRetrofit(String city, String metric, String keyApi) {
+        openWeather.loadWeather(city, metric, keyApi)
+                .enqueue(new Callback<ResponseWeather>() {
+
+                    public void onResponse(Call<ResponseWeather> call, Response<ResponseWeather> response) {
+                        if (response.body() != null) {
+                            float result = response.body().getMain().getTemp();
+                            textTemp.setText(Float.toString(result));
+                            String dis = response.body().getWeather().get(0).getDescription();
+                            description.setText(dis);
+                            pngUrl = response.body().getWeather().get(0).getIcon();
+                            picasso(pngUrl); // передаем "weather: icon"
+                        }
+                        if (response.errorBody() != null) {
+                            textTemp.setText("no data");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseWeather> call, Throwable t) {
+                        textTemp.setText("Error");
+                    }
+                });
+    }
+
+    private void initEvents() {
+        final String editApiKey = "0ecf8658c4caf135dd4f087798c91ffb";
+        final String metric = "metric";
+        Button button = findViewById(R.id.buttonretrofit);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestRetrofit(editCity.getText().toString(), metric, editApiKey);
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        try {
+                            Thread.sleep(2000);
+                            saveSharedPrefs();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                                          }
+                }).start();
+            }
+        });
     }
 
     // Для регистрации Broadcast Receiver
@@ -223,5 +372,17 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
-
+//    //     сохранение города и температуры
+//    @Override
+//    protected void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        outState.putString("CITY", editCity);
+//      }
+//
+//
+//    @Override
+//    protected void onRestoreInstanceState(Bundle saveInstanceState) {
+//        super.onRestoreInstanceState(saveInstanceState);
+//        editCity = saveInstanceState.getString("CITY");
+//    }
 }
