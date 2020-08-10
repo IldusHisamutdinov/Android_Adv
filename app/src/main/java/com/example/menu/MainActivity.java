@@ -6,7 +6,9 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -17,7 +19,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.menu.dao.AccessToData;
 import com.google.android.material.navigation.NavigationView;
 
 
@@ -30,6 +35,9 @@ public class MainActivity extends AppCompatActivity
     private Sensor sensorHumidity;
     private TextView temp;
     private TextView hum;
+//    private CityRecyclerAdapter adapter;
+    private CitySource citySource;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +46,9 @@ public class MainActivity extends AppCompatActivity
         drawer = findViewById(R.id.drawer_layout);
         Toolbar toolbar = initToolbar();
         initDrawer(toolbar);
+        setSupportActionBar(toolbar);
+
+        initRecyclerView();
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorTemp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
@@ -105,6 +116,7 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "Список любимых городов", Toast.LENGTH_SHORT).show();
             return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -179,6 +191,31 @@ public class MainActivity extends AppCompatActivity
         sensorManager.unregisterListener(listenerSensor);
         sensorManager.unregisterListener(listenerSensorHum);
     }
+
+
+    // Инициализация списка
+    private void initRecyclerView() {
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        AccessToData accessToData = App
+                .getInstance()
+                .getAccessToData();
+        citySource = new CitySource(accessToData);
+
+
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+
 
 
 }
