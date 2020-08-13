@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ResponseWeather {
 
-    @SerializedName("menu_add_button")
+    @SerializedName("main")
     @Expose
     private Main main;
     @SerializedName("weather")
