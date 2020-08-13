@@ -14,7 +14,7 @@ import com.example.menu.model.DataModel;
 
 
 public class MainActivity extends AppCompatActivity implements CityRecyclerAdapter.OnDeleteListener {
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private DatabaseHelper databaseHelper;
 
     @Override
@@ -25,6 +25,10 @@ public class MainActivity extends AppCompatActivity implements CityRecyclerAdapt
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         databaseHelper = App.getInstance().getDatabaseInstance();
+
+//        CityRecyclerAdapter recyclerAdapter = new CityRecyclerAdapter(this, databaseHelper.getDataDao().getAllData());
+//        recyclerAdapter.setOnDeleteListener(this);
+//        recyclerView.setAdapter(recyclerAdapter);
     }
 
     @Override
@@ -44,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements CityRecyclerAdapt
         return false;
     }
 
-    @Override
+
     protected void onResume() {
         super.onResume();
         CityRecyclerAdapter recyclerAdapter = new CityRecyclerAdapter(this, databaseHelper.getDataDao().getAllData());
