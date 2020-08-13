@@ -1,5 +1,6 @@
 package com.example.menu;
 
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -9,13 +10,19 @@ public class Main {
     @Expose
     public Double temp;
 
-    public long getTemp() {
+
+    public int getTemp() {
         double doubleValue = temp;
-        long temp1 = (long) doubleValue;
+        int temp1 = (int) doubleValue;
+
         return temp1;
     }
 
     public void setTemp(Double temp) {
         this.temp = temp;
     }
+
 }
+
+
+

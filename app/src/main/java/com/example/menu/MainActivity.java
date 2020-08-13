@@ -1,5 +1,6 @@
 package com.example.menu;
 
+
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,14 +19,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+
+import com.example.menu.database.DatabaseHelper;
+import com.example.menu.model.DataModel;
 
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
@@ -57,10 +61,12 @@ public class MainActivity extends AppCompatActivity
     private ImageView imageView;
     
     @RequiresApi(api = Build.VERSION_CODES.N)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         drawer = findViewById(R.id.drawer_layout);
         Toolbar toolbar = initToolbar();
         initDrawer(toolbar);
@@ -231,84 +237,36 @@ public class MainActivity extends AppCompatActivity
 
     private void initDrawer(Toolbar toolbar) {
         NavigationView navigationView = findViewById(R.id.nav_view);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        databaseHelper = App.getInstance().getDatabaseInstance();
 
-//     final androidx.constraintlayout.widget.ConstraintLayout mainContent = findViewById(R.id.mainContent);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        // пока не настроил перемещение Navigation Drawer вместе с экраном
-//        {
-//
-//            public void onDrawerSlide(android.view.View drawerView, float slideOffset){
-//                super.onDrawerSlide(drawerView, slideOffset);
-//
-//                float slideX = drawerView.getWidth() * slideOffset;
-//                mainContent.setTranslationX(slideX);
-//            }
-//        };
-        drawer.addDrawerListener(toggle);
-        drawer.setScrimColor(android.graphics.Color.BLUE);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
     }
-
-
-    @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-
+        getMenuInflater().inflate(R.menu.menu_add_button, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            Toast.makeText(getApplicationContext(), "переход на сайт", Toast.LENGTH_SHORT).show();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_add: {
+                startActivity(new Intent(this, WeatherActivity.class));
+                break;
+            }
         }
-        if (id == R.id.action_favorite) {
-            Toast.makeText(getApplicationContext(), "Список любимых городов", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
 
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
-            Toast.makeText(getApplicationContext(), "House", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_location) {
-            Toast.makeText(getApplicationContext(), "City", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_geolocation) {
-            Toast.makeText(getApplicationContext(), "Map", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_history) {
-            Toast.makeText(getApplicationContext(), "list of open cities", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_setting) {
-            Toast.makeText(getApplicationContext(), "Setting", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_send) {
-            Toast.makeText(getApplicationContext(), "Write to developer", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_developer) {
-            Toast.makeText(getApplicationContext(), "About the developer", Toast.LENGTH_SHORT).show();
-        }
-
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
+    protected void onResume() {
+        super.onResume();
+        CityRecyclerAdapter recyclerAdapter = new CityRecyclerAdapter(this, databaseHelper.getDataDao().getAllData());
+        recyclerAdapter.setOnDeleteListener(this);
+        recyclerView.setAdapter(recyclerAdapter);
 
     // Button onClick показание датчика температуры
     public void onClickSensTemp(View v) {
@@ -320,41 +278,14 @@ public class MainActivity extends AppCompatActivity
     public void onClickSensHumidity(View v) {
         sensorManager.registerListener(listenerSensorHum, sensorHumidity,
                 SensorManager.SENSOR_DELAY_NORMAL);
+
     }
-
-
-    SensorEventListener listenerSensor = new SensorEventListener() {
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            temp.setText(String.valueOf(event.values[0]));
-        }
-
-    };
-
-    SensorEventListener listenerSensorHum = new SensorEventListener() {
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            hum.setText(String.valueOf(event.values[0]));
-        }
-
-    };
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        sensorManager.unregisterListener(listenerSensor);
-        sensorManager.unregisterListener(listenerSensorHum);
+    public void onDelete(DataModel dataModel) {
+        databaseHelper.getDataDao().delete(dataModel);
     }
+
 
     // Получатель широковещательного сообщения
     private BroadcastReceiver weatherFinishedReceiver = new BroadcastReceiver() {
@@ -385,4 +316,5 @@ public class MainActivity extends AppCompatActivity
 //        super.onRestoreInstanceState(saveInstanceState);
 //        editCity = saveInstanceState.getString("CITY");
 //    }
+
 }

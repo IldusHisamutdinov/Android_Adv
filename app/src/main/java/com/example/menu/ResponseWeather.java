@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class ResponseWeather {
+
     @SerializedName("main")
     @Expose
     private Main main;
@@ -28,4 +29,6 @@ public class ResponseWeather {
     public void setWeather(List<Weather> weather) {
         this.weather = weather;
     }
+
 }
+

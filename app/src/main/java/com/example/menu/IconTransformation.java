@@ -5,10 +5,18 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 
-import com.squareup.picasso.Transformation;
+import android.os.Build;
+import android.service.autofill.Transformation;
+
+import androidx.annotation.RequiresApi;
+
+
+@RequiresApi(api = Build.VERSION_CODES.O_MR1)
+public class IconTransformation implements Transformation {
 
 public class IconTransformation implements Transformation {
     @Override
+
     public Bitmap transform(Bitmap source) {
 
         Path path = new Path();
@@ -22,8 +30,10 @@ public class IconTransformation implements Transformation {
         return answerBitMap;
     }
 
-    @Override
+
+
     public String key() {
         return "icon";
     }
 }
+
