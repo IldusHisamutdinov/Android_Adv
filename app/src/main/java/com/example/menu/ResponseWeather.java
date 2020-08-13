@@ -29,4 +29,6 @@ public class ResponseWeather {
     public void setWeather(List<Weather> weather) {
         this.weather = weather;
     }
+
 }
+
