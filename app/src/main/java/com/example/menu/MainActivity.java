@@ -1,184 +1,82 @@
 package com.example.menu;
 
+
+import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.util.Log;
+import android.widget.EditText;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.google.android.material.navigation.NavigationView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
+public class MainActivity extends AppCompatActivity {
+    private BroadcastReceiver wifiMonitor = new WifiMonitor();
+    private BatteryReceiver batteryReceiver = new BatteryReceiver();
+    private EditText textToken;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-    private DrawerLayout drawer;
-
-    private SensorManager sensorManager;
-    private Sensor sensorTemp;
-    private Sensor sensorHumidity;
-    private TextView temp;
-    private TextView hum;
-
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        drawer = findViewById(R.id.drawer_layout);
-        Toolbar toolbar = initToolbar();
-        initDrawer(toolbar);
-
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        sensorTemp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-        sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
-        temp = findViewById(R.id.temp);
-        hum = findViewById(R.id.h);
+        // получение состояния сети
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);//Произошло изменение сетевого подключения.
+        registerReceiver(wifiMonitor, intentFilter);
+        initNotificationChannel();
+        getToken();
+        // уровень заряда батареи
+        registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_LOW));
+        textToken = findViewById(R.id.token);
     }
 
+    private void getToken() {
 
-    private Toolbar initToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        return toolbar;
-    }
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("PushMessage", "getInstanceId failed", task.getException());
+                            return;
+                        }
 
-    private void initDrawer(Toolbar toolbar) {
-        NavigationView navigationView = findViewById(R.id.nav_view);
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        textToken.setText(token);
 
-//     final androidx.constraintlayout.widget.ConstraintLayout mainContent = findViewById(R.id.mainContent);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        // пока не настроил перемещение Navigation Drawer вместе с экраном
-//        {
-//
-//            public void onDrawerSlide(android.view.View drawerView, float slideOffset){
-//                super.onDrawerSlide(drawerView, slideOffset);
-//
-//                float slideX = drawerView.getWidth() * slideOffset;
-//                mainContent.setTranslationX(slideX);
-//            }
-//        };
-        drawer.addDrawerListener(toggle);
-        drawer.setScrimColor(android.graphics.Color.BLUE);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
+                    }
+                });
     }
 
 
     @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(wifiMonitor);
+        unregisterReceiver(batteryReceiver);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-
-        return true;
+    private void initNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel channel = new NotificationChannel("4", "name", importance);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            Toast.makeText(getApplicationContext(), "переход на сайт", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        if (id == R.id.action_favorite) {
-            Toast.makeText(getApplicationContext(), "Список любимых городов", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
-            Toast.makeText(getApplicationContext(), "House", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_location) {
-            Toast.makeText(getApplicationContext(), "City", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_geolocation) {
-            Toast.makeText(getApplicationContext(), "Map", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_history) {
-            Toast.makeText(getApplicationContext(), "list of open cities", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_setting) {
-            Toast.makeText(getApplicationContext(), "Setting", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_send) {
-            Toast.makeText(getApplicationContext(), "Write to developer", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_developer) {
-            Toast.makeText(getApplicationContext(), "About the developer", Toast.LENGTH_SHORT).show();
-        }
-
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    // Button onClick показание температуры
-    public void onClickSensTemp(View v) {
-        sensorManager.registerListener(listenerSensor, sensorTemp,
-                SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    // Button onClick показание влажности
-    public void onClickSensHumidity(View v) {
-        sensorManager.registerListener(listenerSensorHum, sensorHumidity,
-                SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-
-    SensorEventListener listenerSensor = new SensorEventListener() {
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            temp.setText(String.valueOf(event.values[0]));
-        }
-
-    };
-
-    SensorEventListener listenerSensorHum = new SensorEventListener() {
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            hum.setText(String.valueOf(event.values[0]));
-        }
-
-    };
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        sensorManager.unregisterListener(listenerSensor);
-        sensorManager.unregisterListener(listenerSensorHum);
-    }
-
 
 }
