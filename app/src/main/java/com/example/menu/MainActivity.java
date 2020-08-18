@@ -1,14 +1,6 @@
 package com.example.menu;
 
-import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -41,11 +33,6 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
     static final String BROADCAST_ACTION_WEATHERFINISHED = "com.example.menu.weatherfinished";
-    private SensorManager sensorManager;
-    private Sensor sensorTemp;
-    private Sensor sensorHumidity;
-    private TextView temp;
-    private TextView hum;
     private TextView tempservice;
     private OpenWeather openWeather;
     private TextView textTemp; // Температура (в градусах)
@@ -63,11 +50,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = initToolbar();
         initDrawer(toolbar);
 
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        sensorTemp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-        sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
-        temp = findViewById(R.id.temp);
-        hum = findViewById(R.id.h);
 
         initRetorfit();
         initGui();
@@ -101,8 +83,8 @@ public class MainActivity extends AppCompatActivity
         openWeather = retrofit.create(OpenWeather.class);
     }
 
-    private void requestRetrofit(String city, String metric, String keyApi) {
-        openWeather.loadWeather(city, metric, keyApi)
+    private void requestRetrofit(String lat, String lon, String metric, String keyApi) {
+        openWeather.loadWeather(lat, lon, metric, keyApi)
                 .enqueue(new Callback<ResponseWeather>() {
 
                     public void onResponse(Call<ResponseWeather> call, Response<ResponseWeather> response) {
@@ -130,27 +112,10 @@ public class MainActivity extends AppCompatActivity
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestRetrofit(editCity.getText().toString(), metric, editApiKey);
+       //         requestRetrofit(editCity.getText().toString(), metric, editApiKey);
+       //         requestRetrofit();
             }
         });
-    }
-
-    // Для регистрации Broadcast Receiver
-    @Override
-    protected void onStart() {
-        super.onStart();
-        registerReceiver(weatherFinishedReceiver, new IntentFilter(BROADCAST_ACTION_WEATHERFINISHED));
-    }
-
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(weatherFinishedReceiver);
-    }
-
-    // Button onClick показание WeatherService
-    public void onClickWeatherService(View v) {
-        tempservice = findViewById(R.id.tempService);
-        WeatherService.startWeatherService(MainActivity.this);
     }
 
 
@@ -226,6 +191,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_location) {
             Toast.makeText(getApplicationContext(), "City", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_geolocation) {
+            Intent intent = new Intent(this, MapActivity.class);
+            startActivity(intent);
             Toast.makeText(getApplicationContext(), "Map", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_history) {
             Toast.makeText(getApplicationContext(), "list of open cities", Toast.LENGTH_SHORT).show();
@@ -240,68 +207,6 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    // Button onClick показание датчика температуры
-    public void onClickSensTemp(View v) {
-        sensorManager.registerListener(listenerSensor, sensorTemp,
-                SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    // Button onClick показание датчика влажности
-    public void onClickSensHumidity(View v) {
-        sensorManager.registerListener(listenerSensorHum, sensorHumidity,
-                SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-
-    SensorEventListener listenerSensor = new SensorEventListener() {
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            temp.setText(String.valueOf(event.values[0]));
-        }
-
-    };
-
-    SensorEventListener listenerSensorHum = new SensorEventListener() {
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            hum.setText(String.valueOf(event.values[0]));
-        }
-
-    };
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        sensorManager.unregisterListener(listenerSensor);
-        sensorManager.unregisterListener(listenerSensorHum);
-    }
-
-    // Получатель широковещательного сообщения
-    private BroadcastReceiver weatherFinishedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final long result = intent.getLongExtra(WeatherService.EXTRA_RESULT, 0);
-            // Потокобезопасный вывод данных
-            tempservice.post(new Runnable() {
-                @SuppressLint("SetTextI18n")
-                @Override
-                public void run() {
-                    tempservice.setText(Long.toString(result));
-                }
-            });
-        }
-    };
 
 
 }
