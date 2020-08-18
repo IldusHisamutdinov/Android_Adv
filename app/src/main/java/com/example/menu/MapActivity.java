@@ -43,6 +43,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private GoogleMap mMap;
     private GoogleApiClient googleApiClient;
     private Button back;
+    private Button button;
+    public final static String LAT = "lat";
+    public final static String LON = "lon";
+    private LatLng location = new  LatLng(0,0);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +61,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         initNotificationChannel();
 
         back = findViewById(R.id.back);
+        button = findViewById(R.id.button);
     }
 
     @Override
@@ -75,8 +80,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 Marker marker = addMarker(latLng);
                 Geofence geofence = createGeofence(marker);
                 createGeofencingRequest(geofence);
+
             }
         });
+
+    }
+
+    public void BackTemp(View view) {
+        String latit = Double.toString(location.latitude);
+        String lontit = Double.toString(location.longitude);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(LAT, latit);
+        intent.putExtra(LON, lontit);
+        startActivity(intent);
     }
 
     // Добавление меток на карту
@@ -124,8 +140,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)   // Геозона будет постоянной, пока не удалим геозону или приложение
                 .setLoiteringDelay(1000)    // Установим временную задержку в мс между событиями входа в зону и перемещения в зоне
                 .build();
-    }
 
+    }
     // Геозоны работают через службы Google Play
     // поэтому надо создать клиента этой службы
     // И соединится со службой
@@ -174,6 +190,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 }
                 currentMarker.setPosition(currentPosition);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentPosition, (float) 15));
+
             }
 
             @Override

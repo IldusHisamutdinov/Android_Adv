@@ -5,8 +5,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +38,8 @@ public class MainActivity extends AppCompatActivity
     private TextInputEditText editCity;
     private String png;
     private String url;
+    final String editApiKey = "0ecf8658c4caf135dd4f087798c91ffb";
+    final String metric = "metric";
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -53,8 +53,15 @@ public class MainActivity extends AppCompatActivity
 
         initRetorfit();
         initGui();
-        initEvents();
+   //     initEvents();
         picasso(png);
+
+        Intent intent = getIntent();
+        String latit = intent.getStringExtra(MapActivity.LAT);
+        String lontit = intent.getStringExtra(MapActivity.LON);
+//        final String editApiKey = "0ecf8658c4caf135dd4f087798c91ffb";
+//        final String metric = "metric";
+        requestRetrofit(latit, lontit, metric, editApiKey);
     }
 
     private void initGui() {
@@ -89,8 +96,8 @@ public class MainActivity extends AppCompatActivity
 
                     public void onResponse(Call<ResponseWeather> call, Response<ResponseWeather> response) {
                         if (response.body() != null) {
-                            float result = response.body().getMain().getTemp();
-                            textTemp.setText(Float.toString(result));
+                            long result = response.body().getMain().getTemp();
+                            textTemp.setText(Long.toString(result));
                             String dis = response.body().getWeather().get(0).getDescription();
                             description.setText(dis);
                             png = response.body().getWeather().get(0).getIcon();
@@ -105,19 +112,24 @@ public class MainActivity extends AppCompatActivity
                 });
     }
 
-    private void initEvents() {
-        final String editApiKey = "0ecf8658c4caf135dd4f087798c91ffb";
-        final String metric = "metric";
-        Button button = findViewById(R.id.buttonretrofit);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-       //         requestRetrofit(editCity.getText().toString(), metric, editApiKey);
-       //         requestRetrofit();
-            }
-        });
-    }
+//    private void initEvents() {
+//        final String editApiKey = "0ecf8658c4caf135dd4f087798c91ffb";
+//        final String metric = "metric";
+//        Button button = findViewById(R.id.buttonretrofit);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//       //         requestRetrofit(editCity.getText().toString(), metric, editApiKey);
+//    //            requestRetrofit(latit, metric, editApiKey);
+//            }
+//        });
+//    }
 
+//private void initEventsTwo(){
+//    final String editApiKey = "0ecf8658c4caf135dd4f087798c91ffb";
+//    final String metric = "metric";
+//    requestRetrofit(latit, metric, editApiKey);
+//}
 
     private Toolbar initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
