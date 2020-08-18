@@ -2,28 +2,43 @@ package com.example.menu;
 
 
 import android.annotation.SuppressLint;
-
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-
-import android.net.ConnectivityManager;
+import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.EditText;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+
+import com.example.menu.database.DatabaseHelper;
+import com.example.menu.model.DataModel;
+
+import com.google.android.material.navigation.NavigationView;
+import com.squareup.picasso.Picasso;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends AppCompatActivity
@@ -47,22 +62,10 @@ public class MainActivity extends AppCompatActivity
     
     @RequiresApi(api = Build.VERSION_CODES.N)
 
-    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // получение состояния сети
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);//Произошло изменение сетевого подключения.
-        registerReceiver(wifiMonitor, intentFilter);
-        initNotificationChannel();
-        getToken();
-        // уровень заряда батареи
-        registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_LOW));
-        textToken = findViewById(R.id.token);
-
 
         drawer = findViewById(R.id.drawer_layout);
         Toolbar toolbar = initToolbar();
@@ -223,46 +226,14 @@ public class MainActivity extends AppCompatActivity
     public void onClickWeatherService(View v) {
         tempservice = findViewById(R.id.tempService);
         WeatherService.startWeatherService(MainActivity.this);
-
-    }
-
-    private void getToken() {
-
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w("PushMessage", "getInstanceId failed", task.getException());
-                            return;
-                        }
-
-
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-                        textToken.setText(token);
-
-                    }
-                });
     }
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(wifiMonitor);
-        unregisterReceiver(batteryReceiver);
+    private Toolbar initToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        return toolbar;
     }
-
-    private void initNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            int importance = NotificationManager.IMPORTANCE_LOW;
-            NotificationChannel channel = new NotificationChannel("4", "name", importance);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
 
     private void initDrawer(Toolbar toolbar) {
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -345,6 +316,5 @@ public class MainActivity extends AppCompatActivity
 //        super.onRestoreInstanceState(saveInstanceState);
 //        editCity = saveInstanceState.getString("CITY");
 //    }
-
 
 }
