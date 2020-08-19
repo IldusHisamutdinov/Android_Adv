@@ -16,6 +16,9 @@ public class ResponseWeather {
     @SerializedName("weather")
     @Expose
     private List<Weather> weather = null;
+    @SerializedName("name")
+    @Expose
+    private String name;
 
     public Coord getCoord() {
         return coord;
@@ -39,5 +42,13 @@ public class ResponseWeather {
 
     public void setWeather(List<Weather> weather) {
         this.weather = weather;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

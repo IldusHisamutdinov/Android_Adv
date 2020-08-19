@@ -2,9 +2,6 @@ package com.example.menu;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -12,7 +9,6 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -55,54 +51,35 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mapFragment.getMapAsync(this);
 
         requestPemissions();
-        initNotificationChannel();
 
         back = findViewById(R.id.back);
-        button = findViewById(R.id.button);
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-//        mMap.addMarker(new MarkerOptions()
-//                .position(new LatLng(0, 0))
-//                .anchor(0.5f, 0.5f)
-//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_search_marker))
-//                .title("Current Position"));
-
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
                 addMarker(latLng);
-
             }
         });
-
-//        String latit = Double.toString(location.latitude);
-//        String lontit = Double.toString(location.longitude);
-//        Intent intent = new Intent(this, MainActivity.class);
-//        intent.putExtra(LAT, latit);
-//        intent.putExtra(LON, lontit);
-//        startActivity(intent);
-
     }
 
-    public void BackTemp(View view) {
-        String latit = Double.toString(location.latitude);
-        String lontit = Double.toString(location.longitude);
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(LAT, latit);
-        intent.putExtra(LON, lontit);
-        startActivity(intent);
-    }
-
-    // Добавление меток на карту
+    // Добавление меток на карту и передача в MainActivity
     private Marker addMarker(LatLng location) {
         String title = Double.toString(location.latitude) + "," + Double.toString(location.longitude);
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(location)
                 .title(title));
+
+        mMap.addCircle(new CircleOptions()
+                .center(location)
+                .radius(55000)
+                .strokeColor(Color.BLUE));
+
         String latit = Double.toString(location.latitude);
         String lontit = Double.toString(location.longitude);
         Intent intent = new Intent(this, MainActivity.class);
@@ -110,22 +87,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         intent.putExtra(LON, lontit);
         startActivity(intent);
 
-        mMap.addCircle(new CircleOptions()
-                .center(location)
-                .radius(150)
-                .strokeColor(Color.BLUE));
-
         return marker;
+
     }
 
-    // Запрос координат
+    //    // Запрос координат
     @SuppressLint("MissingPermission")
     private void requestLocation() {
-        // Если пермиссии все таки нет - то просто выйдем, приложение не имеет смысла
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             return;
-        // Получить менеджер геолокаций
+
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_COARSE);
@@ -137,25 +110,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 public void onLocationChanged(Location location) {
                     double lat = location.getLatitude();// Широта
                     double lng = location.getLongitude();// Долгота
-                    String accuracy = Float.toString(location.getAccuracy());
-                    // Переместить метку на текущую позицию
-                    LatLng currentPosition = new LatLng(lat, lng);
-//                    LatLng prevPosition = currentMarker.getPosition();
-//                    if (!(prevPosition.longitude == 0 && prevPosition.latitude == 0)) {
-//                        mMap.addPolyline(new PolylineOptions()
-//                                .add(prevPosition, currentPosition)
-//                                .color(Color.RED)
-//                                .width(5));
-//
-//                    }
 
+                    LatLng currentPosition = new LatLng(lat, lng);
                     currentMarker = mMap.addMarker(new MarkerOptions()
                             .position(currentPosition)
-                            .title(String.valueOf(lat) + String.valueOf(lng)));
-                    //                  currentMarker.setPosition(currentPosition);
+                            .title("Текущая позиция"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentPosition, (float) 5));
-
-
 
                 }
 
@@ -179,10 +139,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         // Проверим на пермиссии, и если их нет, запросим у пользователя
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // запросим координаты
             requestLocation();
         } else {
-            // пермиссии нет, будем запрашивать у пользователя
             requestLocationPermissions();
         }
     }
@@ -191,7 +149,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private void requestLocationPermissions() {
         if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 || !ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            // Запросим эти две пермиссии у пользователя
+
             ActivityCompat.requestPermissions(this,
                     new String[]{
                             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -204,26 +162,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     // Это результат запроса у пользователя пермиссии
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PERMISSION_REQUEST_CODE) {   // Это та самая пермиссия, что мы запрашивали?
+        if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length == 2 &&
                     (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
-                // Все препоны пройдены и пермиссия дана
-                // Запросим координаты
                 requestLocation();
             }
         }
     }
 
-    // На Андроидах версии 26 и выше необходимо создавать канал нотификации
-    // На старых версиях канал создавать не надо
-    private void initNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            int importance = NotificationManager.IMPORTANCE_LOW;
-            NotificationChannel mChannel = new NotificationChannel("2", "name", importance);
-            notificationManager.createNotificationChannel(mChannel);
-        }
-    }
 
     public void Back(View view) {
         Intent intent = new Intent(this, MainActivity.class);
