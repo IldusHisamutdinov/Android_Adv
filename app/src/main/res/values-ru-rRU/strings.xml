@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Menu Navigation Activity</string>
+    <string name="app_name">Погода</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Weather</string>
     <string name="nav_header_subtitle">aelov62@gmail.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">сайт</string>
-    <string name="action_favorite">добавленные</string>
+    <string name="action_favorite">Город</string>
     <string name="menu_send">Отправить</string>
     <string name="menu_home">Главная</string>
     <string name="menu_location">Местоположение</string>
@@ -15,8 +15,327 @@
     <string name="menu_history">История</string>
     <string name="menu_setting">Настройки</string>
     <string name="menu_developer">О разработчике</string>
-
-
+<!-- ==========================-->
+    <string name="_19_c">19 C</string>
+    <string name="todo">TODO</string>
+    <string name="su">Воскр</string>
+    <string name="сlear">Ясно</string>
+    <string name="mon">Пн</string>
+    <string name="tu">Вт</string>
+    <string name="wed">Ср</string>
+    <string name="th">Чт</string>
+    <string name="fr">Пт</string>
+    <string name="sat">Сб</string>
+    <string name="_24_c">24 C</string>
+    <string name="pressure_mmhg_art">Давление, мм рт. ст.</string>
+    <string name="pressure">Давление</string>
+    <string name="humidity">Влажность</string>
+    <string name="back">Back</string>
+    <string name="button">Button</string>
+    <string name="Select_city">Выберите город</string>
+    <string name="ufa">Уфа</string>
+    <string name="_25_c">25 C</string>
+    <string name="empty" />
+    <string name="l">/</string>
+    <string name="_18_c">18 C</string>
+    <string name="_23_c">23 C</string>
+    <string name="_27_c">27 C</string>
+    <string name="_20_c">20 C</string>
+    <string name="_14_c">14 C</string>
+    <string name="_16_c">16 C</string>
+    <string name="s_w">Ю-В</string>
+    <string name="july_01_today">Июль 01 сегодня</string>
+    <string name="settings">настройки</string>
+    <string name="site">сайт</string>
+    <string name="find_city">Найти город</string>
+    <string name="How_to_choose">Как выбрать</string>
+    <string name="cityName">город</string>
+    <string name="task">выполняем</string>
+    <string name="m_s">м/с</string>
+    <string name="wind_speed">ветер</string>
+    <string name="refresh">Обновить</string>
+    <string name="clouds">Облачность</string>
+    <string name="hpa">гПа</string>
+    <string name="sunrise">Восход</string>
+    <string name="sunset">Закат</string>
+    <string name="mmhg_art">мм рт. ст.</string>
+    <string name="metsec">м/с</string>
+    <string name="wind">ветер</string>
+    <string name="history">История</string>
+    <string name="del">DELETE FROM DataModel</string>
+    <string name="geolocation">Геолокация</string>
+    <string name="google_auth">Аутентификация</string>
+    <!--    =============================-->
+    <string-array name="city">
+        <item>Абзаково</item>
+        <item>Екатеринбург</item>
+        <item>Москва</item>
+        <item>Уфа</item>
+        <item>Александро-Невский</item>
+        <item>Алексеевка</item>
+        <item>Алексеевская</item>
+        <item>Алексеевское</item>
+        <item>Алнаши</item>
+        <item>Абаза</item>
+        <item>Абакан</item>
+        <item>Абан</item>
+        <item>Абатский</item>
+        <item>Абдулино</item>
+        <item>Абинск</item>
+        <item>Авангардное</item>
+        <item>Агаповка</item>
+        <item>Агинское</item>
+        <item>Агрыз</item>
+        <item>Адамовка</item>
+        <item>Адлер</item>
+        <item>Адреаполь</item>
+        <item>Адыгейск</item>
+        <item>Адыге-Хабль</item>
+        <item>Азнакаево</item>
+        <item>Азов</item>
+        <item>Азово</item>
+        <item>Айкино</item>
+        <item>Акбулак</item>
+        <item>Аксай</item>
+        <item>Аксарка</item>
+        <item>Аксубаево</item>
+        <item>Актаныш</item>
+        <item>Акулово</item>
+        <item>Акша</item>
+        <item>Акъяр</item>
+        <item>Алагир</item>
+        <item>Алапаевск</item>
+        <item>Алатырь</item>
+        <item>Алдан</item>
+        <item>Алеевка</item>
+        <item>Алейск</item>
+        <item>Александров</item>
+        <item>Александров Гай</item>
+        <item>Александровка</item>
+        <item>Александровск</item>
+        <item>Александровское</item>
+        <item>Алексин</item>
+        <item>Аликово</item>
+        <item>Алнаши</item>
+        <item>Алтайское</item>
+        <item>Алькеево</item>
+        <item>Альменево</item>
+        <item>Альметьевск</item>
+        <item>Амга</item>
+        <item>Амурск</item>
+        <item>Анадырь</item>
+        <item>Анапа</item>
+        <item>Ангарск</item>
+        <item>Анжеро-Судженск</item>
+        <item>Анна</item>
+        <item>Антропово</item>
+        <item>Анучино</item>
+        <item>Апастово</item>
+        <item>Апатиты</item>
+        <item>Апшеронск</item>
+        <item>Арбаж</item>
+        <item>Аргаяш</item>
+        <item>Аргун</item>
+        <item>Ардатов</item>
+        <item>Ардатов</item>
+        <item>Ардон</item>
+        <item>Арзамас</item>
+        <item>Арзгир</item>
+        <item>Аркадак</item>
+        <item>Армавир</item>
+        <item>Армизонское</item>
+        <item>Аромашево</item>
+        <item>Арсеньев</item>
+        <item>Арсеньево</item>
+        <item>Арск</item>
+        <item>Артем</item>
+        <item>Артемовский</item>
+        <item>Арти</item>
+        <item>Архангельск</item>
+        <item>Архангельское</item>
+        <item>Архонская</item>
+        <item>Асбест</item>
+        <item>Асекеево</item>
+        <item>Асино</item>
+        <item>Аскарово</item>
+        <item>Аскиз</item>
+        <item>Аскино</item>
+        <item>Астрахань</item>
+        <item>Аткарск</item>
+        <item>Атня</item>
+        <item>Атюрьево</item>
+        <item>Атяшево</item>
+        <item>Ахтубинск</item>
+        <item>Ачайваям</item>
+        <item>Ачинск</item>
+        <item>Ачинское</item>
+        <item>Ачит</item>
+        <item>Ачхой-Марта</item>
+        <item>Аша</item>
+        <item>Аше</item>
+        <item>Аян</item>
+        <item>Бабаево</item>
+        <item>Бабушкино</item>
+        <item>Бабынино</item>
+        <item>Бавлы</item>
+        <item>Багаевский</item>
+        <item>Баган</item>
+        <item>Багратионово</item>
+        <item>Багратионовск</item>
+        <item>Баево</item>
+        <item>Базарный Карабулак</item>
+        <item>Базарный Сызган</item>
+        <item>Байкалово</item>
+        <item>Байконур</item>
+        <item>Баймак</item>
+        <item>Бакалы</item>
+        <item>Баксан</item>
+        <item>Бакчар</item>
+        <item>Балабаново</item>
+        <item>Балаково</item>
+        <item>Балахна</item>
+        <item>Балахта</item>
+        <item>Балашов</item>
+        <item>Балезино</item>
+        <item>Балтай</item>
+        <item>Балтаси</item>
+        <item>Балтийск</item>
+        <item>Барабинск</item>
+        <item>Баргузин</item>
+        <item>Барда</item>
+        <item>Барнаул</item>
+        <item>Барыш</item>
+        <item>Батагай-Алыта</item>
+        <item>Батайск</item>
+        <item>Батецкий</item>
+        <item>Батырево</item>
+        <item>Башмаково</item>
+        <item>Беднодемьяновск</item>
+        <item>Бежаницы</item>
+        <item>Бежецк</item>
+        <item>Безенчук</item>
+        <item>Бекенево</item>
+        <item>Беково</item>
+        <item>Белая</item>
+        <item>Белая Глина</item>
+        <item>Белая Калитва</item>
+        <item>Белая Холуница</item>
+        <item>Белгород</item>
+        <item>Белебей</item>
+        <item>Белебей</item>
+        <item>Белев</item>
+        <item>Белинский</item>
+        <item>Белкино</item>
+        <item>Белово</item>
+        <item>Белогорск</item>
+        <item>Белозерск</item>
+        <item>Белозерское</item>
+        <item>Белокуриха</item>
+        <item>Беломорск</item>
+        <item>Белорецк</item>
+        <item>Белореченск</item>
+        <item>Белоярский</item>
+        <item>Белоярский</item>
+        <item>Белый</item>
+        <item>Белый яр</item>
+        <item>Беляевка</item>
+        <item>Бердигестях</item>
+        <item>Бердск</item>
+        <item>Бердюжье</item>
+        <item>Береговое</item>
+        <item>Березник</item>
+        <item>Березники</item>
+        <item>Березовка</item>
+        <item>Березово</item>
+        <item>Березовский</item>
+        <item>Березовский</item>
+        <item>Беслан</item>
+        <item>Бессоновка</item>
+        <item>Бея</item>
+        <item>Бижбуляк</item>
+        <item>Бийск</item>
+        <item>Бикин</item>
+        <item>Биробиджан</item>
+        <item>Бирск</item>
+        <item>Бирюлюсы</item>
+        <item>Бичура</item>
+        <item>Благовещенка</item>
+        <item>Благовещенск</item>
+        <item>Благодарный</item>
+        <item>Ближнее</item>
+        <item>Бобров</item>
+        <item>Богатово</item>
+        <item>Богатые Сабы</item>
+        <item>Богданович</item>
+        <item>Боговарово</item>
+        <item>Богородицк</item>
+        <item>Богородск</item>
+        <item>Богородское</item>
+        <item>Боготол</item>
+        <item>Боград</item>
+        <item>Богучаны</item>
+        <item>Богучар</item>
+        <item>Боковская</item>
+        <item>Бокситогорск</item>
+        <item>Болгар</item>
+        <item>Бологое</item>
+        <item>Болотное</item>
+        <item>Болхов</item>
+        <item>Большаково</item>
+        <item>Большая Глушица</item>
+        <item>Большая Мартыновка</item>
+        <item>Большая Мурта</item>
+        <item>Большая Поляна</item>
+        <item>Большая Соснова</item>
+        <item>Большая Черниговка</item>
+        <item>Большеречье</item>
+        <item>Большеустьикинское</item>
+        <item>Большие Березняки</item>
+        <item>Большие Горки</item>
+        <item>Большие Уки</item>
+        <item>Большое Болдино</item>
+        <item>Большое Игнатово</item>
+        <item>Большое Мурашкино</item>
+        <item>Большое Нагаткино</item>
+        <item>Большое село</item>
+        <item>Большое Село</item>
+        <item>Большое Солдатское</item>
+        <item>Большое Сорокино</item>
+        <item>Большой Камень</item>
+        <item>Большой Улуй</item>
+        <item>Большой Царын</item>
+        <item>Бондари</item>
+        <item>Бор</item>
+        <item>Борзя</item>
+        <item>Борисовка</item>
+        <item>Борисоглебск</item>
+        <item>Борисоглебский</item>
+        <item>Боровичи</item>
+        <item>Боровск</item>
+        <item>Борогонцы</item>
+        <item>Бородино</item>
+        <item>Борское</item>
+        <item>Братск</item>
+        <item>Бреды</item>
+        <item>Брейтово</item>
+        <item>Брюховецкая</item>
+        <item>Брянск</item>
+        <item>Брянское</item>
+        <item>Бугульма</item>
+        <item>Бугуруслан</item>
+        <item>Буденновск</item>
+        <item>Буздяк</item>
+        <item>Бузулук</item>
+        <item>Буй</item>
+        <item>Буинск</item>
+        <item>Бураево</item>
+        <item>Бурла</item>
+        <item>Бутурлино</item>
+        <item>Бутурлиновка</item>
+        <item>Быково</item>
+        <item>Быстрый Исток</item>
+        <item>Бычково</item>
+    </string-array>
 </resources>
 
 

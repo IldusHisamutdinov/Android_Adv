@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">Menu Navigation Activity</string>
+    <string name="app_name">Weather</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Weather</string>
     <string name="nav_header_subtitle">aelov62@gmail.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">site</string>
-    <string name="action_favorite">favorite</string>
+    <string name="action_favorite">City</string>
     <string name="menu_send">Send</string>
     <string name="menu_home">Home</string>
     <string name="menu_location">Location</string>
@@ -14,5 +14,326 @@
     <string name="menu_history">History</string>
     <string name="menu_setting">Settings</string>
     <string name="menu_developer">About the developer</string>
-
+    <!-- TODO: Remove or change this placeholder text -->
+    <!-- ==========================-->
+    <string name="_19_c">19 C</string>
+    <string name="todo">TODO</string>
+    <string name="su">Sunday</string>
+    <string name="сlear">Сlear</string>
+    <string name="mon">Mn</string>
+    <string name="tu">Tu</string>
+    <string name="wed">Wd</string>
+    <string name="th">Th</string>
+    <string name="fr">Fr</string>
+    <string name="sat">Sat</string>
+    <string name="_24_c">24 C</string>
+    <string name="pressure_mmhg_art">Pressure, mmHg Art.</string>
+    <string name="pressure">pressure</string>
+    <string name="humidity">humidity</string>
+    <string name="wind_speed">wind</string>
+    <string name="back">Back</string>
+    <string name="button">Button</string>
+    <string name="Select_city">Select city</string>
+    <string name="ufa">Ufa</string>
+    <string name="_25_c">25 C</string>
+    <string name="empty" />
+    <string name="l">/</string>
+    <string name="_18_c">18 C</string>
+    <string name="_23_c">23 C</string>
+    <string name="_27_c">27 C</string>
+    <string name="_20_c">20 C</string>
+    <string name="_14_c">14 C</string>
+    <string name="_16_c">16 C</string>
+    <string name="s_w">S-W</string>
+    <string name="july_01_today">July 01 today</string>
+    <string name="settings">settings</string>
+    <string name="site">site</string>
+    <string name="find_city">Find a city</string>
+    <string name="How_to_choose">How to choose</string>
+    <string name="cityName">city</string>
+    <string name="task">perform</string>
+    <string name="m_s">m/s</string>
+    <string name="refresh">Refresh</string>
+    <string name="clouds">Clouds</string>
+    <string name="hpa">hPa</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+    <string name="mmhg_art">mmHg Art.</string>
+    <string name="metsec">m/s</string>
+    <string name="wind">wind</string>
+    <string name="history">History</string>
+    <string name="del">DELETE FROM DataModel</string>
+    <string name="geolocation">Geolocation</string>
+    <string name="google_auth">GoogleAuth</string>
+    <!--    =============================-->
+    <string-array name="city">
+        <item>Abzakovo</item>
+        <item>Ekaterinburg</item>
+        <item>Moscow</item>
+        <item>Ufa</item>
+        <item>AlexanderNevsky</item>
+        <item>Alekseevka</item>
+        <item>Alekseevskaya</item>
+        <item>Alekseevskoe</item>
+        <item>Aleksin</item>
+        <item>Alnashi</item>
+        <item>Abaza</item>
+        <item>Abakan</item>
+        <item>Aban</item>
+        <item>Abate</item>
+        <item>Abdulino</item>
+        <item>Abinsk</item>
+        <item>Vanguard</item>
+        <item>Agapovka</item>
+        <item>Aginskoe</item>
+        <item>Agryz</item>
+        <item>Adamovka</item>
+        <item>Adler</item>
+        <item>Adreapol</item>
+        <item>Adygeisk</item>
+        <item>Adyge-Khabl</item>
+        <item>Aznakaevo</item>
+        <item>Azov</item>
+        <item>Azovo</item>
+        <item>Aikino</item>
+        <item>Akbulak</item>
+        <item>Aksai</item>
+        <item>Aksarka</item>
+        <item>Aksubaevo</item>
+        <item>Aktanysh</item>
+        <item>Akulovo</item>
+        <item>Aksha</item>
+        <item>Akyar</item>
+        <item>Alagir</item>
+        <item>Alapaevsk</item>
+        <item>Alatyr</item>
+        <item>Aldan</item>
+        <item>Aleevka</item>
+        <item>Aleisk</item>
+        <item>Alexandrov</item>
+        <item>GaiAlexandrov</item>
+        <item>Alexandrovka</item>
+        <item>Alexandrovsk</item>
+        <item>Alexandrovskoe</item>
+        <item>Aleksin</item>
+        <item>Alikovo</item>
+        <item>Alnashi</item>
+        <item>Altai</item>
+        <item>Alkeevo</item>
+        <item>Almenevo</item>
+        <item>Almetyevsk</item>
+        <item>Amga</item>
+        <item>Amursk</item>
+        <item>Anadyr</item>
+        <item>Anapa</item>
+        <item>Angarsk</item>
+        <item>Anzhero-Sudzhensk</item>
+        <item>Anna</item>
+        <item>Antropovo</item>
+        <item>Anuchino</item>
+        <item>Apastovo</item>
+        <item>Apatity</item>
+        <item>Apsheronsk</item>
+        <item>Arbazh</item>
+        <item>Argayash</item>
+        <item>Argun</item>
+        <item>Ardatov</item>
+        <item>Ardon</item>
+        <item>Arzamas</item>
+        <item>Arzgir</item>
+        <item>Arkadak</item>
+        <item>Armavir</item>
+        <item>Armizonskoe</item>
+        <item>Aromashevo</item>
+        <item>Arseniev</item>
+        <item>Arsenyevo</item>
+        <item>Arsk</item>
+        <item>Artem</item>
+        <item>Artyomovskiy</item>
+        <item>Artie</item>
+        <item>Arkhangelsk</item>
+        <item>Arkhangelskoe</item>
+        <item>Archonskaya</item>
+        <item>Asbestos</item>
+        <item>Asekeevo</item>
+        <item>Asino</item>
+        <item>Askarovo</item>
+        <item>Askiz</item>
+        <item>Aschino</item>
+        <item>Astrakhan</item>
+        <item>Atkarsk</item>
+        <item>Atnya</item>
+        <item>Atyuryevo</item>
+        <item>Atyashevo</item>
+        <item>Akhtubinsk</item>
+        <item>Achaivayam</item>
+        <item>Achinsk</item>
+        <item>Achinskoe</item>
+        <item>Achit</item>
+        <item>Achkhoy-Marta</item>
+        <item>Asha</item>
+        <item>Ashe</item>
+        <item>Ayan</item>
+        <item>Babaevo</item>
+        <item>Babushkino</item>
+        <item>Babynino</item>
+        <item>Bavly</item>
+        <item>Bagaevsky</item>
+        <item>Bagan</item>
+        <item>Bagrationovo</item>
+        <item>Bagrationovsk</item>
+        <item>Baevo</item>
+        <item>Bazaar Karabulak</item>
+        <item>Bazaar Syzgan</item>
+        <item>Baikalovo</item>
+        <item>Baikonur</item>
+        <item>Baymak</item>
+        <item>Groceries</item>
+        <item>Baksan</item>
+        <item>Bakchar</item>
+        <item>Balabanovo</item>
+        <item>Balakovo</item>
+        <item>Balakhna</item>
+        <item>Balakhta</item>
+        <item>Balashov</item>
+        <item>Balezino</item>
+        <item>Baltai</item>
+        <item>Baltasi</item>
+        <item>Baltiysk</item>
+        <item>Barabinsk</item>
+        <item>Barguzin</item>
+        <item>Barda</item>
+        <item>Barnaul</item>
+        <item>Profit</item>
+        <item>Batagay-Alyta</item>
+        <item>Bataysk</item>
+        <item>Batetsky</item>
+        <item>Batyrevo</item>
+        <item>Bashmakovo</item>
+        <item>Bednodemyanovsk</item>
+        <item>Bezhanitsy</item>
+        <item>Bezhetsk</item>
+        <item>Bezenchuk</item>
+        <item>Bekenevo</item>
+        <item>Bekovo</item>
+        <item>White</item>
+        <item>White Clay</item>
+        <item>Belaya Kalitva</item>
+        <item>White Kholunitsa</item>
+        <item>Belgorod</item>
+        <item>Belebey</item>
+        <item>Belebey</item>
+        <item>Belev</item>
+        <item>Belinsky</item>
+        <item>Belkino</item>
+        <item>Belovo</item>
+        <item>Belogorsk</item>
+        <item>Belozersk</item>
+        <item>Belozerskoe</item>
+        <item>Belokurikha</item>
+        <item>Belomorsk</item>
+        <item>Beloretsk</item>
+        <item>Belorechensk</item>
+        <item>Beloyarsky</item>
+        <item>Beloyarsky</item>
+        <item>White</item>
+        <item>WhiteYar</item>
+        <item>Belyaevka</item>
+        <item>Berdigestyah</item>
+        <item>Berdsk</item>
+        <item>Berduzhier</item>
+        <item>Beregovoe</item>
+        <item>Bereznik</item>
+        <item>Berezniki</item>
+        <item>Berezovka</item>
+        <item>Berezovo</item>
+        <item>Berezovsky</item>
+        <item>Berezovsky</item>
+        <item>Beslan</item>
+        <item>Bessonovka</item>
+        <item>Beya</item>
+        <item>Bizhbulyak</item>
+        <item>Biysk</item>
+        <item>Bikin</item>
+        <item>Birobidzhan</item>
+        <item>Birsk</item>
+        <item>Turquoise</item>
+        <item>Bichura</item>
+        <item>Annunciation</item>
+        <item>Blagoveshchensk</item>
+        <item>Grateful</item>
+        <item>Near</item>
+        <item>Bobrov</item>
+        <item>Bogatovo</item>
+        <item>RichSaba</item>
+        <item>Bogdanovich</item>
+        <item>Bogovarovo</item>
+        <item>Bogoroditsk</item>
+        <item>Bogorodsk</item>
+        <item>Bogorodskoe</item>
+        <item>Bogotol</item>
+        <item>Bograd</item>
+        <item>Boguchany</item>
+        <item>Boguchar</item>
+        <item>Bokovskaya</item>
+        <item>Boksitogorsk</item>
+        <item>Bolgar</item>
+        <item>Bologoye</item>
+        <item>Swamp</item>
+        <item>Bolkhov</item>
+        <item>Bolshakovo</item>
+        <item>Great Backwoods</item>
+        <item>Bolshaya Martynovka</item>
+        <item>Big Murta</item>
+        <item>Bolshaya Polyana</item>
+        <item>Big Pine</item>
+        <item>Big Chernigovka</item>
+        <item>Greater Speech</item>
+        <item>Bolsheusstikinskoe</item>
+        <item>Bolshie Bereznyaki</item>
+        <item>Big Slides</item>
+        <item>Big Uki</item>
+        <item>Bolshoe Boldino</item>
+        <item>Bolshoe Ignatovo</item>
+        <item>Bolshoe Murashkino</item>
+        <item>Bolshoe Nagatkino</item>
+        <item>Bigvillage</item>
+        <item>BolshoyeSelo</item>
+        <item>Big Soldier</item>
+        <item>Bolshoye Sorokino</item>
+        <item>BigStone</item>
+        <item>BigUlui</item>
+        <item>BigTsaryn</item>
+        <item>Coopers</item>
+        <item>Boron</item>
+        <item>Borzya</item>
+        <item>Borisovka</item>
+        <item>Borisoglebsk</item>
+        <item>Borisoglebsky</item>
+        <item>Borovichi</item>
+        <item>Borovsk</item>
+        <item>Borogontsy</item>
+        <item>Borodino</item>
+        <item>Borskoe</item>
+        <item>Bratsk</item>
+        <item>Delirium</item>
+        <item>Breitovo</item>
+        <item>Bryukhovetskaya</item>
+        <item>Bryansk</item>
+        <item>Bryanskoe</item>
+        <item>Bugulma</item>
+        <item>Buguruslan</item>
+        <item>Budennovsk</item>
+        <item>Buzdyak</item>
+        <item>Buzuluk</item>
+        <item>Buoy</item>
+        <item>Buinsk</item>
+        <item>Buraevo</item>
+        <item>Burla</item>
+        <item>Buturlino</item>
+        <item>Buturlinovka</item>
+        <item>Bykovo</item>
+        <item>Quick Source</item>
+        <item>Bychkovo</item>
+    </string-array>
 </resources>

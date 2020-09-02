@@ -1,4 +1,4 @@
-package com.example.menu;
+package com.example.menu.weather;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

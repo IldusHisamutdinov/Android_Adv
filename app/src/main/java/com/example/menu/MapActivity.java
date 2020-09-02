@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -33,8 +34,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private Marker currentMarker;
     private GoogleMap mMap;
     private GoogleApiClient googleApiClient;
-    private Button back;
     private Button button;
+    private ImageView back;
     public final static String LAT = "lat";
     public final static String LON = "lon";
     private LatLng location = new LatLng(54.78, 56.13);
@@ -51,9 +52,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mapFragment.getMapAsync(this);
 
         requestPemissions();
-
         back = findViewById(R.id.back);
-
     }
 
     @Override
@@ -88,7 +87,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         startActivity(intent);
 
         return marker;
-
     }
 
     //    // Запрос координат
@@ -112,11 +110,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     double lng = location.getLongitude();// Долгота
 
                     LatLng currentPosition = new LatLng(lat, lng);
+                    if(mMap != null){
                     currentMarker = mMap.addMarker(new MarkerOptions()
                             .position(currentPosition)
                             .title("Текущая позиция"));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentPosition, (float) 5));
-
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentPosition, (float) 8));
+                    }
                 }
 
                 @Override
@@ -175,4 +174,5 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
+
 }

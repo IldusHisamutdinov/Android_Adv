@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.menu"
-        minSdkVersion 23
+        minSdkVersion 26
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -14,15 +14,46 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildTypes.each {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("apikey.properties").newDataInputStream())
+        def weatherApiKey = properties.getProperty("weather_api_key", "")
+        it.buildConfigField "String", "WEATHER_API_KEY", weatherApiKey
+        def placesApiKey = properties.getProperty("places_api_key", "")
+        it.buildConfigField "String", "PLACES_API_KEY", placesApiKey
+
+    }
+
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    flavorDimensions 'version'
+    productFlavors {
+        freeMap {
+            dimension 'version'
+            applicationIdSuffix '.map'
+            versionNameSuffix '.map'
+        }
+        freeNameCity {
+            dimension 'version'
+            applicationIdSuffix '.nameCity'
+            versionNameSuffix '.nameCity'
+        }
+        freeBase {
+            dimension 'version'
+            applicationIdSuffix '.base'
+            versionNameSuffix '.base'
+        }
     }
 }
 
@@ -39,8 +70,13 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    implementation 'androidx.wear:wear:1.0.0'
+    implementation 'com.google.android.gms:play-services-auth:18.1.0'
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    compileOnly 'com.google.android.wearable:wearable:2.5.0'
 
 }
