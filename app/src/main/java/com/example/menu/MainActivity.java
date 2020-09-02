@@ -1,13 +1,26 @@
 package com.example.menu;
 
+
 import android.Manifest;
+
+
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
+
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,19 +29,27 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+
+import com.example.menu.database.DatabaseHelper;
+import com.example.menu.model.DataModel;
+
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.textfield.TextInputEditText;
 import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
@@ -44,6 +65,7 @@ public class MainActivity extends AppCompatActivity
     private OpenWeather openWeather;
     private TextView textTemp; // Температура (в градусах)
     private TextView description;
+
     private TextInputEditText editCity;
     private String pngUrl; //url картинки openweathermap.org/img/wn/(11d).png
     private String url;
@@ -51,14 +73,25 @@ public class MainActivity extends AppCompatActivity
     final String metric = "metric";
     LocationListener locationListener;
     private LatLng location;
+
+    private TextView editCity;
+    private String pngUrl;
+    private String NAME_CITY = "nameCity"; // для SharedPreferences
+    private String TEMP_T ="temp"; // для SharedPreferences
+    private ImageView imageView;
+    
+
     @RequiresApi(api = Build.VERSION_CODES.N)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         drawer = findViewById(R.id.drawer_layout);
         Toolbar toolbar = initToolbar();
         initDrawer(toolbar);
+
 
         initRetorfit();
         initGui();
@@ -69,20 +102,87 @@ public class MainActivity extends AppCompatActivity
         String latit = intent.getStringExtra(MapActivity.LAT);
         String lontit = intent.getStringExtra(MapActivity.LON);
         requestRetrofit(latit, lontit, metric, editApiKey);
+
+
+
+
+        initRetorfit();
+        initGui();
+        initEvents();
+        textTown();
+
     }
 
     private void initGui() {
+        temp = findViewById(R.id.temp);
+        hum = findViewById(R.id.h);
         textTemp = findViewById(R.id.tempretrofit);
         editCity = findViewById(R.id.editCity);
         description = findViewById(R.id.description);
+        imageView = findViewById(R.id.coord);
     }
+
 
     private void picasso(String png) {
         png = pngUrl;
         url = "https://openweathermap.org/img/wn/";
+
+    public void saveSharedPrefs() {
+        String preferenceFileName = "name";
+        SharedPreferences sharedPref = getSharedPreferences(preferenceFileName, MODE_PRIVATE);
+        savePreferences(sharedPref);    // сохранить настройки
+    }
+
+    public void loadSharedPrefs() {
+        String preferenceFileName = "name";
+        SharedPreferences sharedPref = getSharedPreferences(preferenceFileName, MODE_PRIVATE);
+        loadPreferences(sharedPref);
+    }
+
+    private void savePreferences(SharedPreferences sharedPref) {
+        String keys = editCity.getText().toString();
+        String values = textTemp.getText().toString();
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(NAME_CITY, keys);
+        editor.putString(TEMP_T, values);
+        editor.apply();//сохраняет в backgraund потоке
+    }
+
+    private void loadPreferences(SharedPreferences sharedPref) {
+        String keys = editCity.getText().toString();
+        String value = textTemp.getText().toString();
+        String valueFirst = sharedPref.getString(NAME_CITY, keys );
+        String valueSecond = sharedPref.getString(TEMP_T, value );
+        editCity.setText(valueFirst);
+        textTemp.setText(valueSecond);
+    }
+
+    public void textTown() {
+        String town = editCity.getText().toString();
+
+        if (town != null) {
+            loadSharedPrefs();
+            picasso();
+        }
+
+    }
+
+    private void picasso() { //при первой загрузки активити
+
         ImageView imageView = findViewById(R.id.coord);
         Picasso.get()
-                .load(url + png + ".png")
+                .load(R.mipmap.ic_1_6)
+                .transform(new IconTransformation())
+                .into(imageView);
+    }
+
+    private void picasso(String icon) {
+        icon = pngUrl;
+        String url;
+        url = "https://openweathermap.org/img/wn/";
+ //       ImageView imageView = findViewById(R.id.coord);
+        Picasso.get()
+                .load(url + pngUrl + ".png")
                 .transform(new IconTransformation())
                 .placeholder(R.mipmap.ic_1_6)
                 .into(imageView);
@@ -136,9 +236,13 @@ public class MainActivity extends AppCompatActivity
                             description.setText(dis);
                             pngUrl = response.body().getWeather().get(0).getIcon();
                             picasso(pngUrl); // передаем "weather: icon"
+
                             String nameCity = response.body().getName();
                             editCity.setText(nameCity);
-                        }else {
+                        }
+                      
+                        if (response.errorBody() != null) {
+
                             textTemp.setText("no data");
                         }
 
@@ -158,7 +262,23 @@ public class MainActivity extends AppCompatActivity
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 requestRetrofitnameCity(editCity.getText().toString(), metric, editApiKey);
+
+
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        try {
+                            Thread.sleep(2000);
+                            saveSharedPrefs();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                                          }
+                }).start();
 
             }
         });
@@ -216,59 +336,29 @@ public class MainActivity extends AppCompatActivity
 
     private void initDrawer(Toolbar toolbar) {
         NavigationView navigationView = findViewById(R.id.nav_view);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        databaseHelper = App.getInstance().getDatabaseInstance();
 
-//     final androidx.constraintlayout.widget.ConstraintLayout mainContent = findViewById(R.id.mainContent);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        // пока не настроил перемещение Navigation Drawer вместе с экраном
-//        {
-//
-//            public void onDrawerSlide(android.view.View drawerView, float slideOffset){
-//                super.onDrawerSlide(drawerView, slideOffset);
-//
-//                float slideX = drawerView.getWidth() * slideOffset;
-//                mainContent.setTranslationX(slideX);
-//            }
-//        };
-        drawer.addDrawerListener(toggle);
-        drawer.setScrimColor(android.graphics.Color.BLUE);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
     }
-
-
-    @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-
+        getMenuInflater().inflate(R.menu.menu_add_button, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            Toast.makeText(getApplicationContext(), "переход на сайт", Toast.LENGTH_SHORT).show();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_add: {
+                startActivity(new Intent(this, WeatherActivity.class));
+                break;
+            }
         }
-        if (id == R.id.action_favorite) {
-            Toast.makeText(getApplicationContext(), "Список любимых городов", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return false;
     }
+
 
 
     @Override
@@ -293,8 +383,37 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "About the developer", Toast.LENGTH_SHORT).show();
         }
 
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+
+    protected void onResume() {
+        super.onResume();
+        CityRecyclerAdapter recyclerAdapter = new CityRecyclerAdapter(this, databaseHelper.getDataDao().getAllData());
+        recyclerAdapter.setOnDeleteListener(this);
+        recyclerView.setAdapter(recyclerAdapter);
+
+
+
+
+    @Override
+    public void onDelete(DataModel dataModel) {
+        databaseHelper.getDataDao().delete(dataModel);
     }
+
+
+    // Получатель широковещательного сообщения
+    private BroadcastReceiver weatherFinishedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final long result = intent.getLongExtra(WeatherService.EXTRA_RESULT, 0);
+            // Потокобезопасный вывод данных
+            tempservice.post(new Runnable() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void run() {
+                    tempservice.setText(Long.toString(result));
+                }
+            });
+        }
+    };
+
 
 }

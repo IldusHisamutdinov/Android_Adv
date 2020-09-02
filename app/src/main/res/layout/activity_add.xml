@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@mipmap/w_05"
+    android:padding="10dp">
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputCity"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editCity"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:hint="Город,страна"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/buttonretrofit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="10dp"
+        android:text="TempRetrofit" />
+
+    <TextView
+        android:id="@+id/tempretrofit"
+        android:layout_width="110dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="90dp"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="20dp"
+        android:text="clear"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:id="@+id/coord"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="200dp"
+        app:srcCompat="@mipmap/ic_1_6" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="20sp" />
+
+
+</LinearLayout>

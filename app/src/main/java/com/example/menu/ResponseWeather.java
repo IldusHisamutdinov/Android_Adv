@@ -7,9 +7,11 @@ import java.util.List;
 
 public class ResponseWeather {
 
+
     @SerializedName("coord")
     @Expose
     private Coord coord;
+
     @SerializedName("main")
     @Expose
     private Main main;
@@ -44,6 +46,7 @@ public class ResponseWeather {
         this.weather = weather;
     }
 
+
     public String getName() {
         return name;
     }
@@ -51,4 +54,7 @@ public class ResponseWeather {
     public void setName(String name) {
         this.name = name;
     }
+
+
 }
+

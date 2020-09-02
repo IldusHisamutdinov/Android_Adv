@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <item android:title="загрузить" android:id="@+id/add_context" />
+        <item android:title="изменить" android:id="@+id/update_context"/>
+        <item android:title="удалить" android:id="@+id/remove_context"/>
+
+</menu>
