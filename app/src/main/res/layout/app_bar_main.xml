@@ -27,8 +27,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="80dp"
-        android:text="Sensors and Service of weather"
+        android:text="Geolocation and weather"
         android:textSize="30sp" />
+
 
 
     <Button
@@ -120,12 +121,13 @@
         android:onClick="onClickWeatherService"
         android:text="TempService" />
 
+
     <ImageView
         android:id="@+id/coord"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginLeft="200dp"
-        android:layout_marginTop="420dp"
+        android:layout_marginTop="200dp"
         app:srcCompat="@mipmap/ic_1_6" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -133,11 +135,8 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="350dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputApi">
+        android:layout_marginTop="140dp"
+        android:layout_marginEnd="8dp" >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editCity"
@@ -150,8 +149,8 @@
         android:id="@+id/buttonretrofit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="360dp"
         android:layout_gravity="end"
+        android:layout_marginTop="140dp"
         android:text="TempRetrofit" />
 
     <TextView
@@ -167,10 +166,19 @@
         android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="500dp"
         android:layout_marginLeft="100dp"
+        android:layout_marginTop="290dp"
         android:text="clear"
-        android:textSize="20sp"/>
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/findOutTheWeather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="320dp"
+        android:onClick="FindOutTheWeather"
+        android:text="Find out the weather" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
