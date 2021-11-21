@@ -29,7 +29,6 @@ import com.example.menu.model.DataModel;
 import com.example.menu.weather.OpenWeather;
 import com.example.menu.weather.ResponseWeather;
 import com.example.menu.weather.TimeDate;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.squareup.picasso.Picasso;
@@ -66,11 +65,11 @@ public class MainActivity extends AppCompatActivity
     final String metric = "metric";
     final String lang = "ru";
     private LocationListener locationListener;
-    private LatLng location;
-    private String city;
+    private String latit;
+    private String lontit;
     private String NAME_CITY = "nameCity"; // для SharedPreferences
-    private String TEMP_T = "temp"; // для SharedPreferences
-    private String SPEED_S = "speed"; // для SharedPreferences
+    private String latitSharedPref; // для SharedPreferences
+    private String lontitSharedPref; // для SharedPreferences
     private String DESCR_D = "description"; // для SharedPreferences
     private String DATE_D = "date"; // для SharedPreferences
     private String CLOUDS_C = "clouds"; // для SharedPreferences
@@ -78,6 +77,8 @@ public class MainActivity extends AppCompatActivity
     private String PRESSURE_P = "pressure"; // для SharedPreferencespressure
     private String SUNSET_S = "sunset"; // для SharedPreferencespressure
     private String SUNRISE_S = "sunrise"; // для SharedPreferencespressure
+    private String LATIT = "latit"; // для SharedPreferences
+    private String LONTIT = "lontit"; // для SharedPreferences
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -113,10 +114,13 @@ public class MainActivity extends AppCompatActivity
     //прием координат lon и lat от MapActivity
     private void initCoord() {
         Intent intent = getIntent();
-        String latit = intent.getStringExtra(MapActivity.LAT);
-        String lontit = intent.getStringExtra(MapActivity.LON);
+        latit = intent.getStringExtra(MapActivity.LAT);
+        lontit = intent.getStringExtra(MapActivity.LON);
         if (latit == null || lontit == null) {
             loadSharedPrefs();
+            latit = latitSharedPref;
+            lontit = lontitSharedPref;
+            requestRetrofit(latit, lontit, metric, BuildConfig.WEATHER_API_KEY, lang);
         } else {
             requestRetrofit(latit, lontit, metric, BuildConfig.WEATHER_API_KEY, lang);
             new Thread(new Runnable() {
@@ -227,11 +231,12 @@ public class MainActivity extends AppCompatActivity
                 public void onLocationChanged(Location location) {
                     double lat = location.getLatitude();// Широта
                     double lng = location.getLongitude();// Долгота
-                    String latitude = Double.toString(lat);
-                    String longitude = Double.toString(lng);
-                    requestRetrofit(latitude, longitude, metric, BuildConfig.WEATHER_API_KEY, lang);
+                    latit = Double.toString(lat);
+                    lontit = Double.toString(lng);
+                    requestRetrofit(latit, lontit, metric, BuildConfig.WEATHER_API_KEY, lang);
                 }
 
+                //
                 @Override
                 public void onStatusChanged(String provider, int status, Bundle extras) {
                 }
@@ -309,62 +314,25 @@ public class MainActivity extends AppCompatActivity
 
     private void savePreferences(SharedPreferences sharedPref) {
         String keys = inputCity.getText().toString();
-        String values = textTemp.getText().toString();
-        String keysSpeed = speed.getText().toString();
-        String keysDescr = description.getText().toString();
-        String keysDate = date.getText().toString();
-        String keysClouds = clouds.getText().toString();
-        String keysHumidity = humidity.getText().toString();
-        String keysPress = pressure.getText().toString();
-        String keysSunrise = sunriseName.getText().toString();
-        String keysSunset = sunsetName.getText().toString();
+        String latite = latit;
+        String lontite = lontit;
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(NAME_CITY, keys);
-        editor.putString(TEMP_T, values);
-        editor.putString(SPEED_S, keysSpeed);
-        editor.putString(DESCR_D, keysDescr);
-        editor.putString(DATE_D, keysDate);
-        editor.putString(CLOUDS_C, keysClouds);
-        editor.putString(HUMIDITY_H, keysHumidity);
-        editor.putString(PRESSURE_P, keysPress);
-        editor.putString(SUNRISE_S, keysSunrise);
-        editor.putString(SUNSET_S, keysSunset);
-
+        editor.putString(LATIT, String.valueOf(latite));
+        editor.putString(LONTIT, String.valueOf(lontite));
         editor.apply();//сохраняет в backgraund потоке
     }
 
     private void loadPreferences(SharedPreferences sharedPref) {
         String keys = inputCity.getText().toString();
-        String value = textTemp.getText().toString();
-        String keysSpeed = speed.getText().toString();
-        String keysDescr = description.getText().toString();
-        String keysDate = date.getText().toString();
-        String keysClouds = clouds.getText().toString();
-        String keysHumidity = humidity.getText().toString();
-        String keysPress = pressure.getText().toString();
-        String keysSunrise = sunriseName.getText().toString();
-        String keysSunset = sunsetName.getText().toString();
+        String latite = latit;
+        String lontite = lontit;
         String valueFirst = sharedPref.getString(NAME_CITY, keys);
-        String valueSecond = sharedPref.getString(TEMP_T, value);
-        String valueThird = sharedPref.getString(SPEED_S, keysSpeed);
-        String valueFourth = sharedPref.getString(DESCR_D, keysDescr);
-        String valueFifth = sharedPref.getString(DATE_D, keysDate);
-        String valueSixth = sharedPref.getString(CLOUDS_C, keysClouds);
-        String valueSeventh = sharedPref.getString(HUMIDITY_H, keysHumidity);
-        String valueEighth = sharedPref.getString(PRESSURE_P, keysPress);
-        String valueNinth = sharedPref.getString(SUNRISE_S, keysSunrise);
-        String valueTenth = sharedPref.getString(SUNSET_S, keysSunset);
+        String valueSecond = sharedPref.getString(LATIT, String.valueOf(latite));
+        String valueThird = sharedPref.getString(LONTIT, String.valueOf(lontite));
         inputCity.setText(valueFirst);
-        textTemp.setText(valueSecond);
-        speed.setText(valueThird);
-        description.setText(valueFourth);
-        date.setText(valueFifth);
-        clouds.setText(valueSixth);
-        humidity.setText(valueSeventh);
-        pressure.setText(valueEighth);
-        sunriseName.setText(valueNinth);
-        sunsetName.setText(valueTenth);
-
+        latitSharedPref = valueSecond;
+        lontitSharedPref = valueThird;
     }
 
     public void result() {

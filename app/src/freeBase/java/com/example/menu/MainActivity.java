@@ -32,9 +32,7 @@ import com.example.menu.weather.DialogCity;
 import com.example.menu.weather.OpenWeather;
 import com.example.menu.weather.ResponseWeather;
 import com.example.menu.weather.TimeDate;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.textfield.TextInputEditText;
 import com.squareup.picasso.Picasso;
 
 import java.time.Instant;
@@ -54,7 +52,6 @@ public class MainActivity extends AppCompatActivity
     private OpenWeather openWeather;
     private TextView textTemp; // Температура (в градусах)
     private TextView description;
-    private TextInputEditText editCity;
     private TextView inputCity;
     private TextView date;
     private TextView speed; // скорость ветра
@@ -70,19 +67,7 @@ public class MainActivity extends AppCompatActivity
     private String url;
     final String metric = "metric";
     final String lang = "ru";
-    private LocationListener locationListener;
-    private LatLng location;
-    private String city;
     private String NAME_CITY = "nameCity"; // для SharedPreferences
-    private String TEMP_T = "temp"; // для SharedPreferences
-    private String SPEED_S = "speed"; // для SharedPreferences
-    private String DESCR_D = "description"; // для SharedPreferences
-    private String DATE_D = "date"; // для SharedPreferences
-    private String CLOUDS_C = "clouds"; // для SharedPreferences
-    private String HUMIDITY_H = "humidity"; // для SharedPreferences
-    private String PRESSURE_P = "pressure"; // для SharedPreferencespressure
-    private String SUNSET_S = "sunset"; // для SharedPreferencespressure
-    private String SUNRISE_S = "sunrise"; // для SharedPreferencespressure
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -121,6 +106,8 @@ public class MainActivity extends AppCompatActivity
         String town = intent.getStringExtra(TOWN);
         if (town == null) {
             loadSharedPrefs();
+            town = inputCity.getText().toString();
+            requestRetrofitnameCity(town, metric, BuildConfig.WEATHER_API_KEY, lang);
         } else {
             requestRetrofitnameCity(town, metric, BuildConfig.WEATHER_API_KEY, lang);
             new Thread(new Runnable() {
@@ -216,11 +203,10 @@ public class MainActivity extends AppCompatActivity
 
                             int namePress = response.body().getMain().getPressure();
                             pressure.setText(Integer.toString(namePress));
-
-                            int sunr = response.body().getSys().getSunrise();
-                            sunriseName.setText(TimeDate.formatTime(Instant.ofEpochSecond(sunr)));
                             int suns = response.body().getSys().getSunset();
-                            sunsetName.setText(TimeDate.formatTime(Instant.ofEpochSecond(suns)));
+                            int sunr = response.body().getSys().getSunrise();
+                            sunriseName.setText(TimeDate.formatTime(Instant.ofEpochSecond(suns)));
+                            sunsetName.setText(TimeDate.formatTime(Instant.ofEpochSecond(sunr)));
 
                         }
                     }
@@ -422,62 +408,15 @@ public class MainActivity extends AppCompatActivity
 
     private void savePreferences(SharedPreferences sharedPref) {
         String keys = inputCity.getText().toString();
-        String values = textTemp.getText().toString();
-        String keysSpeed = speed.getText().toString();
-        String keysDescr = description.getText().toString();
-        String keysDate = date.getText().toString();
-        String keysClouds = clouds.getText().toString();
-        String keysHumidity = humidity.getText().toString();
-        String keysPress = pressure.getText().toString();
-        String keysSunrise = sunriseName.getText().toString();
-        String keysSunset = sunsetName.getText().toString();
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(NAME_CITY, keys);
-        editor.putString(TEMP_T, values);
-        editor.putString(SPEED_S, keysSpeed);
-        editor.putString(DESCR_D, keysDescr);
-        editor.putString(DATE_D, keysDate);
-        editor.putString(CLOUDS_C, keysClouds);
-        editor.putString(HUMIDITY_H, keysHumidity);
-        editor.putString(PRESSURE_P, keysPress);
-        editor.putString(SUNRISE_S, keysSunrise);
-        editor.putString(SUNSET_S, keysSunset);
-
         editor.apply();//сохраняет в backgraund потоке
     }
 
     private void loadPreferences(SharedPreferences sharedPref) {
         String keys = inputCity.getText().toString();
-        String value = textTemp.getText().toString();
-        String keysSpeed = speed.getText().toString();
-        String keysDescr = description.getText().toString();
-        String keysDate = date.getText().toString();
-        String keysClouds = clouds.getText().toString();
-        String keysHumidity = humidity.getText().toString();
-        String keysPress = pressure.getText().toString();
-        String keysSunrise = sunriseName.getText().toString();
-        String keysSunset = sunsetName.getText().toString();
         String valueFirst = sharedPref.getString(NAME_CITY, keys);
-        String valueSecond = sharedPref.getString(TEMP_T, value);
-        String valueThird = sharedPref.getString(SPEED_S, keysSpeed);
-        String valueFourth = sharedPref.getString(DESCR_D, keysDescr);
-        String valueFifth = sharedPref.getString(DATE_D, keysDate);
-        String valueSixth = sharedPref.getString(CLOUDS_C, keysClouds);
-        String valueSeventh = sharedPref.getString(HUMIDITY_H, keysHumidity);
-        String valueEighth = sharedPref.getString(PRESSURE_P, keysPress);
-        String valueNinth = sharedPref.getString(SUNRISE_S, keysSunrise);
-        String valueTenth = sharedPref.getString(SUNSET_S, keysSunset);
         inputCity.setText(valueFirst);
-        textTemp.setText(valueSecond);
-        speed.setText(valueThird);
-        description.setText(valueFourth);
-        date.setText(valueFifth);
-        clouds.setText(valueSixth);
-        humidity.setText(valueSeventh);
-        pressure.setText(valueEighth);
-        sunriseName.setText(valueNinth);
-        sunsetName.setText(valueTenth);
-
     }
 
     public void result() {
